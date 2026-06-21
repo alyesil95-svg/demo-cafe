@@ -1,26 +1,223 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DEMO CAFE — Design tokens (Tailwind v4 @theme)
+   ============================================================ */
+@theme {
+  --color-cream: #f5efe6;
+  --color-warmwhite: #fffcf7;
+  --color-espresso: #3b2f2f;
+  --color-espresso-deep: #2a2020;
+  --color-caramel: #c8a27c;
+  --color-caramel-deep: #b08856;
+  --color-ink: #1a1a1a;
+  --color-muted: #6b5d52;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+
+  --shadow-soft: 0 18px 50px -22px rgba(59, 47, 47, 0.35);
+  --shadow-lift: 0 32px 70px -28px rgba(59, 47, 47, 0.45);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto; /* GSAP ScrollTrigger controls scrolling; smooth handled per-click */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  overflow-x: hidden;
+  font-feature-settings: "liga", "kern";
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-caramel);
+  color: var(--color-warmwhite);
+}
+
+/* Elegant thin scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-caramel);
+  border-radius: 999px;
+  border: 2px solid var(--color-cream);
+}
+
+/* ============================================================
+   Typography helpers
+   ============================================================ */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.label {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-caramel-deep);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.display {
+  font-family: var(--font-serif);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Reveal-on-scroll (GSAP toggles .is-visible)
+   Works scrolling down AND up because GSAP toggleClass re-fires.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ============================================================
+   Cinematic video-section text entrance (transform/opacity only)
+   ============================================================ */
+.svs-text {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0) scale(0.96);
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.svs-text.svs-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* ============================================================
+   Decorative animations
+   ============================================================ */
+@keyframes steam-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scaleY(0.6);
+  }
+  35% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scaleY(1.2);
+  }
+}
+
+@keyframes draw-cup {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-up-soft {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float-soft 6s ease-in-out infinite;
+}
+
+/* Caramel underline grow for nav links */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1.5px;
+  width: 100%;
+  background: var(--color-caramel);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Hide elements until fonts/JS ready handled via opacity utilities */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .svs-text {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .animate-float {
+    animation: none !important;
+  }
 }
